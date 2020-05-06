@@ -102,7 +102,7 @@ def prediction_transformation(preds, y, age, gender, tag_pad_idx):
             list(gender[non_pad_elements].cpu().numpy()))
 
 
-def evaluate_bias(model, iterator, tag_pad_idx):
+def evaluate_bias(model, iterator, tag_pad_idx, return_value = False):
     
     model.eval()
     
@@ -149,18 +149,30 @@ def evaluate_bias(model, iterator, tag_pad_idx):
         FScore_M = f1_score(preds[t_gender==1], gold_labels[t_gender==1], average='macro')
         FScore_F = f1_score(preds[t_gender==0], gold_labels[t_gender==0], average='macro')
         
+    if not return_value:
+        
         print("Overall")
         print("Accuracy : {:.6f}".format(acc_overall))
         print("F Score : {:.6f}".format(FScore_overall))
-        
         print("Age group")
         print("Accuracy Under35: {:.6f} V.S. Over45: {:.6f}".format(acc_U, acc_O))
         print("F Score Under35: {:.6f} V.S. Over45: {:.6f}".format(FScore_U, FScore_O))
         print("Gender group")
         print("Accuracy Female: {:.6f} V.S. Male: {:.6f}".format(acc_F, acc_M))
         print("F Score Female: {:.6f} V.S. Male: {:.6f}".format(FScore_F, FScore_M))
-        
-    return 0
+    
+        return 0
+    else:
+        return {"acc_overall":acc_overall,
+                "acc_O":acc_O,
+                "acc_U":acc_U,
+                "acc_M":acc_M,
+                "acc_F":acc_F,
+                "FScore_overall":FScore_overall,
+                "FScore_O":FScore_O,
+                "FScore_U":FScore_U,
+                "FScore_M":FScore_M,
+                "FScore_F":FScore_F}
 
     
 
